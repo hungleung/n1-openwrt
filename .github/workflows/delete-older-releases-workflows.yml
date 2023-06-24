@@ -75,6 +75,8 @@ on:
         required: false
         default: true
         type: boolean
+  schedule:
+    - cron: 0 4 * * 4
 
 env:
   TZ: America/New_York
