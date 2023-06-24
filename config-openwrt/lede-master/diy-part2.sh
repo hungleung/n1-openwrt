@@ -61,16 +61,16 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 
 # change default lan address and hostname
 # verified to be working
-sed -i 's/192.168.1.1/192.168.88.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.10.254/g' package/base-files/files/bin/config_generate
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
 sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
 sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
 sed -i 's/KMS Server/KMS/' feeds/luci/applications/luci-app-vlmcsd/luasrc/controller/vlmcsd.lua
-sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
-sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
+# sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
+# sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
 #sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
-sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
+# sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
 sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
@@ -88,6 +88,7 @@ sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/lua
 # sed -i 's#key"'\''=//p'\''#& \| head -n1#' package/base-files/files/lib/functions/system.sh
 
 # change default package
-sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot/luci-app-udpxy/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
+# sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot/luci-app-udpxy/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
+sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot//' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd//' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
 # add flexget dependency
 # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 python python-sqlite3 pyyaml python-sqlite python-expat python-openssl python-bzip2 distribute/' -e 's/luci-app-autoreboot/luci-app-udpxy/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard /'  include/target.mk
