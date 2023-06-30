@@ -65,6 +65,12 @@ sed -i 's/192.168.1.1/192.168.10.254/g' package/base-files/files/bin/config_gene
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 # sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
 # sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
+sed -i '281s/y/n/'  config/Config-images.in
+sed -i '293s/y/n/'  config/Config-images.in
+sed -i '70s/y/n/'  config/Config-images.in
+sed -i '27s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
+sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
+sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
 sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
 sed -i 's/KMS Server/KMS/' feeds/luci/applications/luci-app-vlmcsd/luasrc/controller/vlmcsd.lua
 sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
@@ -72,6 +78,10 @@ sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/c
 sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
 sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
+sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
 # disable and remove wireless
