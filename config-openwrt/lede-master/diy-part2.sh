@@ -30,7 +30,7 @@ echo "DISTRIB_SOURCECODE='lede'" >>package/base-files/files/etc/openwrt_release
 #
 # Add luci-app-amlogic
 svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
-
+svn co https://github.com/vernesong/OpenClash/tree/master/luci-app-openclash package/luci-app-openclash
 # Fix runc version error
 # rm -rf ./feeds/packages/utils/runc/Makefile
 # svn export https://github.com/openwrt/packages/trunk/utils/runc/Makefile ./feeds/packages/utils/runc/Makefile
@@ -79,11 +79,11 @@ sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/c
 sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
 sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
-sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
+# sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
 # disable and remove wireless
 #sed -i 's/\+libiwinfo-lua//' feeds/luci/collections/luci/Makefile
@@ -101,5 +101,5 @@ sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/lua
 # change default package
 # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ipv6 git git-gitweb git-http luci-app-bird1-ipv4 luci-app-bird1-ipv6 make python3/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
 # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus luci-app-qbittorrent/'  include/target.mk
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-qbittorrent/' -e '59s/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard/'  include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-qbittorrent/' -e '59s/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-openclash/'  include/target.mk
 # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot//' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd//' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
