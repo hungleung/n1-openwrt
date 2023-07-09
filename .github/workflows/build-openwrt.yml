@@ -176,11 +176,11 @@ on:
       builder_name:
         description: "Set OpenWrt builder signature."
         required: false
-        default: "angel"
+        default: "lee"
         type: choice
         options:
           - angel
-          - yourname
+          - lee
 
 env:
   FEEDS_CONF: config-openwrt/${{ inputs.source_branch }}/feeds.conf.default
