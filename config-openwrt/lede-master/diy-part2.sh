@@ -106,7 +106,7 @@ sed -i -e '56s/ppp ppp-mod-pppoe/bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ip
 # Add online upgrade
 sed -i -e '57s/kmod-ipt-raw/perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
 # Add package needed
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-amlogic luci-app-samba4 nano/'  include/target.mk
-# Remove package not needed
-sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd //' include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-amlogic luci-app-samba4 nano htop curl/'  include/target.mk
+# Add nfs
+sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd /nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop /' include/target.mk
 sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificates/luci-app-turboacc curl ca-certificates/' include/target.mk
