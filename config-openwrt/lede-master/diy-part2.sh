@@ -104,13 +104,13 @@ sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
 # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot//' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd//' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
 
 # Add ospf function
-sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/firewall4 bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ipv6 git git-gitweb git-http luci-app-bird1-ipv4 luci-app-bird1-ipv6 make python3/' include/target.mk
+sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/firewall4/' include/target.mk
 # Add online upgrade
 sed -i -e '57s/kmod-ipt-raw/perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
-# Add shellClash
+# Add openClash
 sed -i -e '58s/iptables-mod-tproxy iptables-mod-extra/luci luci-base dnsmasq-full coreutils coreutils-nohup bash curl ca-certificates ipset ip-full libcap libcap-bin ruby ruby-yaml unzip kmod-tun luci-compat kmod-inet-diag kmod-nft-tproxy wget/'  include/target.mk
 # Add package needed
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/ luci-app-ddns luci-app-upnp luci-app-udpxy ddns-scripts_cloudflare.com-v4 luci-app-qbittorrent luci-app-amlogic luci-app-samba4 nano htop curl/'  include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/ luci-app-ddns luci-app-upnp luci-app-udpxy ddns-scripts_cloudflare.com-v4 luci-app-qbittorrent luci-app-amlogic luci-ssl-openssl luci-app-samba4 nano htop/'  include/target.mk
 # Add nfs
 sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus /nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop /' include/target.mk
 sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificates/luci-app-turboacc curl ca-certificates/' include/target.mk
