@@ -79,15 +79,15 @@ sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/c
 sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
 sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
-sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
+# sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
 # Add package needed
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/ddns-scripts_cloudflare.com-v4 luci-ssl-openssl luci-app-ddns luci-app-upnp luci-app-udpxy luci-app-acme acme-dnsapi acme-deploy acme-notify luci-app-qbittorrent luci-proto-wireguard luci-app-wireguard luci-app-samba4 nano htop curl/'  include/target.mk
 # Add nfs/emmc/upgrade
-sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd /nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen /' include/target.mk
+sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus /luci-app-passwall nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen /' include/target.mk
 # remove packages not needed
 sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificates/luci-app-turboacc ca-certificates/' include/target.mk
