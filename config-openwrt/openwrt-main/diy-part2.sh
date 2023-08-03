@@ -40,3 +40,25 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 # git apply ../config-openwrt/patches/{0001*,0002*}.patch --directory=feeds/luci
 #
 # ------------------------------- Other ends -------------------------------
+
+# change default lan address and hostname
+# verified to be working
+sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
+sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
+sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
+sed -i '281s/y/n/'  config/Config-images.in
+sed -i '293s/y/n/'  config/Config-images.in
+sed -i '70s/y/n/'  config/Config-images.in
+sed -i '80s/y/n/'  config/Config-images.in
+sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
+sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
+sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
+sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
+
+# Add ospf
+sed -i -e '56s/dnsmasq/dnsmasq-full bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ipv6 git git-gitweb git-http luci-app-bird1-ipv4 luci-app-bird1-ipv6 make python3/'  include/target.mk
+# Add package needed
+sed -i -e '57s/firewall4/firewall4 luci-app-passwall luci-app-qbittorrent luci-app-samba4 nano htop/'  include/target.mk
+# Add nfs/emmc/upgrade
+sed -i -e '58s/nftables/nftables nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
