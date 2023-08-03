@@ -47,10 +47,10 @@ sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_genera
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
 sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
-sed -i '281s/y/n/'  config/Config-images.in
-sed -i '293s/y/n/'  config/Config-images.in
-sed -i '70s/y/n/'  config/Config-images.in
-sed -i '80s/y/n/'  config/Config-images.in
+#sed -i '281s/y/n/'  config/Config-images.in
+#sed -i '293s/y/n/'  config/Config-images.in
+#sed -i '70s/y/n/'  config/Config-images.in
+#sed -i '80s/y/n/'  config/Config-images.in
 sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
 sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
 sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
