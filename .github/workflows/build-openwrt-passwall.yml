@@ -3,7 +3,7 @@
 # Description: Build OpenWrt
 #============================================================================================
 
-name: Build OpenWrt
+name: Build OpenWrt Passwall
 
 on:
   repository_dispatch:
