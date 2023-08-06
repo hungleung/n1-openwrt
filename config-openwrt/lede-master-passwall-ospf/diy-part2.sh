@@ -67,6 +67,7 @@ sed -i '80s/y/n/'  config/Config-images.in
 sed -i '27s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
 sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
 sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
+sed -i '18-29d' package/lean/default-settings/files/zzz-default-settings
 
 # Add package needed
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-samba4 nano htop curl/'  include/target.mk
