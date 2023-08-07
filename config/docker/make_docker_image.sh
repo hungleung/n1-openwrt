@@ -12,7 +12,7 @@
 # Copyright (C) 2021~ https://github.com/unifreq/openwrt_packit
 # Copyright (C) 2021~ https://github.com/ophub/amlogic-s9xxx-openwrt
 #
-# Command: ./config/docker/make_docker_image.sh
+# Command: ./config-openwrt/docker/make_docker_image.sh
 #
 #======================================== Functions list ========================================
 #
@@ -29,7 +29,7 @@ current_path="${PWD}"
 openwrt_path="${current_path}/openwrt"
 openwrt_rootfs_file="*rootfs.tar.gz"
 docker_rootfs_file="openwrt-docker-armvirt-64-default-rootfs.tar.gz"
-docker_path="${current_path}/config/docker"
+docker_path="${current_path}/config-openwrt/docker"
 make_path="${current_path}/make-openwrt"
 common_files="${make_path}/openwrt-files/common-files"
 tmp_path="${current_path}/tmp"

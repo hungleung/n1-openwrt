@@ -21,8 +21,8 @@
 # Instructions:  Download OpenWrt firmware from the official OpenWrt,
 #                Use Image Builder to add packages, lib, theme, app and i18n, etc.
 #
-# Command: ./config/imagebuilder/imagebuilder.sh <source:branch>
-#          ./config/imagebuilder/imagebuilder.sh openwrt:21.02.3
+# Command: ./config-openwrt/imagebuilder/imagebuilder.sh <source:branch>
+#          ./config-openwrt/imagebuilder/imagebuilder.sh openwrt:21.02.3
 #
 #======================================== Functions list ========================================
 #
@@ -40,8 +40,8 @@
 make_path="${PWD}"
 openwrt_dir="openwrt"
 imagebuilder_path="${make_path}/${openwrt_dir}"
-custom_files_path="${make_path}/config/imagebuilder/files"
-custom_config_file="${make_path}/config/imagebuilder/config"
+custom_files_path="${make_path}/config-openwrt/imagebuilder/files"
+custom_config_file="${make_path}/config-openwrt/imagebuilder/config"
 
 # Set default parameters
 STEPS="[\033[95m STEPS \033[0m]"

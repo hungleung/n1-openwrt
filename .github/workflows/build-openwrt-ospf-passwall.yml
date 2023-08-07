@@ -189,10 +189,10 @@ on:
           - lee
 
 env:
-  FEEDS_CONF: config-openwrt/${{ inputs.source_branch }}-passwall-ospf/feeds.conf.default
-  CONFIG_FILE: config-openwrt/${{ inputs.source_branch }}-passwall-ospf/config
-  DIY_P1_SH: config-openwrt/${{ inputs.source_branch }}-passwall-ospf/diy-part1.sh
-  DIY_P2_SH: config-openwrt/${{ inputs.source_branch }}-passwall-ospf/diy-part2.sh
+  FEEDS_CONF: config/${{ inputs.source_branch }}-passwall-ospf/feeds.conf.default
+  CONFIG_FILE: config/${{ inputs.source_branch }}-passwall-ospf/config
+  DIY_P1_SH: config/${{ inputs.source_branch }}-passwall-ospf/diy-part1.sh
+  DIY_P2_SH: config/${{ inputs.source_branch }}-passwall-ospf/diy-part2.sh
   TZ: America/New_York
 
 jobs:
