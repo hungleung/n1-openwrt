@@ -53,7 +53,6 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 
 #!/bin/bash
 
-
 # change default lan address and hostname
 # verified to be working
 sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_generate
@@ -70,7 +69,7 @@ sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
 sed -i '18,29d' package/lean/default-settings/files/zzz-default-settings
 
 # Add package needed
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-samba4 nano htop curl/'  include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-cifs-mount luci-app-samba4 nano htop curl/'  include/target.mk
 # Add nfs/emmc/upgrade
 sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus luci-app-vlmcsd/luci-app-passwall nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen /' include/target.mk
 # Add ospf
