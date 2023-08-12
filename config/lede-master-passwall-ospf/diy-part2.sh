@@ -68,7 +68,7 @@ sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
 sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
 sed -i '18,29d' package/lean/default-settings/files/zzz-default-settings
 sed -i 's/nas/services/g' feeds/luci/applications/luci-app-qbittorrent/luasrc/controller/qbittorrent.lua
-sed -i 's/nas/services/g' feeds/luci/applications/luci-app-cifsd/luasrc/controller/cifsd.lua
+sed -i 's/nas/services/g' feeds/luci/applications/luci-app-cifs-mount/luasrc/controller/cifs.lua
 
 # Add package needed
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-cifs-mount luci-app-samba4 nano htop curl/'  include/target.mk
