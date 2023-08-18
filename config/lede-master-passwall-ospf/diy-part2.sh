@@ -53,14 +53,6 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 
 #!/bin/bash
 
-
-# drop mosdns and v2ray-geodata packages that come with the source
-find ./ | grep Makefile | grep v2ray-geodata | xargs rm -f
-find ./ | grep Makefile | grep mosdns | xargs rm -f
-
-git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
-
 # change default lan address and hostname
 # verified to be working
 sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_generate
@@ -79,8 +71,8 @@ sed -i 's/nas/services/g' feeds/luci/applications/luci-app-qbittorrent/luasrc/co
 sed -i 's/nas/services/g' feeds/luci/applications/luci-app-cifs-mount/luasrc/controller/cifs.lua
 
 # Add package needed
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/ddns-scripts_cloudflare.com-v4 luci-ssl-openssl luci-app-ddns luci-app-upnp luci-app-udpxy luci-app-acme acme-dnsapi acme-deploy acme-notify luci-app-qbittorrent luci-app-cifs-mount luci-app-mosdns luci-app-smartdns luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard luci-app-samba4 adguardhome nano htop curl/'  include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-app-cifs-mount luci-app-samba4 nano htop curl/'  include/target.mk
 # Add nfs/emmc/upgrade
-sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus/luci-app-passwall nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen /' include/target.mk
+sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus luci-app-vlmcsd/luci-app-passwall nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen /' include/target.mk
 # Add ospf
-sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon/bird1c-ipv4 bird1cl-ipv4 git git-gitweb git-http luci-app-bird1-ipv4 make python3/' include/target.mk
+sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificates/bird1c-ipv4 bird1cl-ipv4 git git-gitweb git-http luci-app-bird1-ipv4 make python3/' include/target.mk
