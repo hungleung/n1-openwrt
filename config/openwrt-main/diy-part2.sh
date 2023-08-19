@@ -25,6 +25,12 @@ echo "DISTRIB_SOURCECODE='official'" >>package/base-files/files/etc/openwrt_rele
 # Add luci-app-amlogic
 svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
 
+# remove v2ray-geodata package from feeds (openwrt-22.03 & master)
+rm -rf feeds/packages/net/v2ray-geodata
+
+git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+
 # coolsnowwolf default software package replaced with Lienol related software package
 # rm -rf feeds/packages/utils/{containerd,libnetwork,runc,tini}
 # svn co https://github.com/Lienol/openwrt-packages/trunk/utils/{containerd,libnetwork,runc,tini} feeds/packages/utils
@@ -55,4 +61,4 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 # sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
 # sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 
-sed -i -e '56s/dnsmasq/dnsmasq-full vpn-policy-routing luci-app-vpn-policy-routing luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
+sed -i -e '56s/dnsmasq/dnsmasq-full vpn-policy-routing luci-app-vpn-policy-routing luci-app-mosdns adguardhome luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
