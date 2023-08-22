@@ -61,4 +61,4 @@ sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/control
 sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
 sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 
-sed -i -e '56s/dnsmasq/dnsmasq-full pbr luci-app-pbr luci-app-mosdns adguardhome luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
+sed -i -e '56s/dnsmasq/dnsmasq perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
