@@ -31,6 +31,9 @@ rm -rf feeds/packages/net/v2ray-geodata
 git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
 git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
+rm -rf feeds/packages/lang/golang
+svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
+
 # coolsnowwolf default software package replaced with Lienol related software package
 # rm -rf feeds/packages/utils/{containerd,libnetwork,runc,tini}
 # svn co https://github.com/Lienol/openwrt-packages/trunk/utils/{containerd,libnetwork,runc,tini} feeds/packages/utils
@@ -61,4 +64,4 @@ sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/control
 sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
 sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 
-sed -i -e '56s/dnsmasq/luci-compat adguardhome dnsmasq-full luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
+sed -i -e '56s/dnsmasq/luci-compat luci-app-mosdns adguardhome dnsmasq-full luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
