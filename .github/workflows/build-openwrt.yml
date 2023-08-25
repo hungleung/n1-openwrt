@@ -16,7 +16,7 @@ on:
       source_branch:
         description: "Select the source branch"
         required: false
-        default: "lede-master"
+        default: "openwrt-main"
         type: choice
         options:
           - openwrt-openwrt-22.03
@@ -139,7 +139,7 @@ on:
       openwrt_kernel:
         description: "Select kernel version"
         required: false
-        default: "5.15.1_6.1.1"
+        default: "5.15.1"
         type: choice
         options:
           - 5.4.1_5.10.1
