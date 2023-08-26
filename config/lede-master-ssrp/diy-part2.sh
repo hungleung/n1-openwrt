@@ -77,13 +77,16 @@ sed -i 's/KMS Server/KMS/' feeds/luci/applications/luci-app-vlmcsd/luasrc/contro
 sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
 sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
 sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
-sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
-sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
+sed -i '12,15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
+sed -i '1,3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
 sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
+sed -i '18,29d' package/lean/default-settings/files/zzz-default-settings
+sed -i 's/nas/services/g' feeds/luci/applications/luci-app-qbittorrent/luasrc/controller/qbittorrent.lua
+sed -i 's/nas/services/g' feeds/luci/applications/luci-app-cifs-mount/luasrc/controller/cifs.lua
 
 # Add package needed
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 luci-ssl-openssl luci-app-udpxy luci-app-acme acme-dnsapi acme-deploy acme-notify luci-app-qbittorrent luci-proto-wireguard luci-app-wireguard luci-app-samba4 nano htop curl/'  include/target.mk
