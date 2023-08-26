@@ -65,41 +65,41 @@ sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_genera
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 # sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
 # sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
-sed -i '281s/y/n/'  config/Config-images.in
-sed -i '293s/y/n/'  config/Config-images.in
-sed -i '70s/y/n/'  config/Config-images.in
-sed -i '80s/y/n/'  config/Config-images.in
-sed -i '27s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
-sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
-sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
-sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
-sed -i 's/KMS Server/KMS/' feeds/luci/applications/luci-app-vlmcsd/luasrc/controller/vlmcsd.lua
-sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
-sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
-sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
-sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
-sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
-# sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-# sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-# sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-# sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-# sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
+# sed -i '281s/y/n/'  config/Config-images.in
+# sed -i '293s/y/n/'  config/Config-images.in
+# sed -i '70s/y/n/'  config/Config-images.in
+# sed -i '80s/y/n/'  config/Config-images.in
+# sed -i '27s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
+# sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
+# sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
+# sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
+# sed -i 's/KMS Server/KMS/' feeds/luci/applications/luci-app-vlmcsd/luasrc/controller/vlmcsd.lua
+# sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
+# sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
+# sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
+# sed -i '12-15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
+# sed -i '1-3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
+# # sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# # sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# # sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# # sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+# # sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
-# disable and remove wireless
-#sed -i 's/\+libiwinfo-lua//' feeds/luci/collections/luci/Makefile
-#sed -i 's/iwinfo//' feeds/luci/modules/luci-mod-admin-full/Makefile
-#sed -i 's/wpad-openssl//' target/linux/ramips/mt7621/target.mk
+# # disable and remove wireless
+# #sed -i 's/\+libiwinfo-lua//' feeds/luci/collections/luci/Makefile
+# #sed -i 's/iwinfo//' feeds/luci/modules/luci-mod-admin-full/Makefile
+# #sed -i 's/wpad-openssl//' target/linux/ramips/mt7621/target.mk
 
-# curl --retry 3 -s --globoff "https://gist.githubusercontent.com/1-1-2/335dbc8e138f39fb8fe6243d424fe476/raw/[lean's%20lede]mt7621_jdcloud_re-sp-01b.dts" -o target/linux/ramips/dts/mt7621_jdcloud_re-sp-01b.dts
-# #disable wireless
-# #sed -i '/Device\/adslr_g7/i\define Device\/jdcloud_re-sp-01b\n  \$(Device\/dsa-migration)\n  \$(Device\/uimage-lzma-loader)\n  IMAGE_SIZE := 32448k\n  DEVICE_VENDOR := JDCloud\n  DEVICE_MODEL := RE-SP-01B\n  DEVICE_PACKAGES := lsblk block-mount e2fsprogs fdisk kmod-fs-ext4 kmod-sdhci-mt7620 kmod-usb3\nendef\nTARGET_DEVICES += jdcloud_re-sp-01b\n\n' target/linux/ramips/image/mt7621.mk
-# sed -i '/Device\/adslr_g7/i\define Device\/jdcloud_re-sp-01b\n  \$(Device\/dsa-migration)\n  \$(Device\/uimage-lzma-loader)\n  IMAGE_SIZE := 32448k\n  DEVICE_VENDOR := JDCloud\n  DEVICE_MODEL := RE-SP-01B\n  DEVICE_PACKAGES := lsblk block-mount e2fsprogs fdisk kmod-fs-ext4 kmod-sdhci-mt7620 kmod-usb3 kmod-mt7603 kmod-mt7615e kmod-mt7615-firmware wpad-openssl\nendef\nTARGET_DEVICES += jdcloud_re-sp-01b\n\n' target/linux/ramips/image/mt7621.mk
-# sed -i -e '/lenovo,newifi-d1|\\/i\        jdcloud,re-sp-01b|\\' -e '/ramips_setup_macs/,/}/{/ampedwireless,ally-00x19k/i\        jdcloud,re-sp-01b)\n\t\tlan_mac=$(mtd_get_mac_ascii u-boot-env mac)\n\t\twan_mac=$(macaddr_add "$lan_mac" 1)\n\t\tlabel_mac=$lan_mac\n\t\t;;
-#     }' target/linux/ramips/mt7621/base-files/etc/board.d/02_network
-# sed -i 's#key"'\''=//p'\''#& \| head -n1#' package/base-files/files/lib/functions/system.sh
+# # curl --retry 3 -s --globoff "https://gist.githubusercontent.com/1-1-2/335dbc8e138f39fb8fe6243d424fe476/raw/[lean's%20lede]mt7621_jdcloud_re-sp-01b.dts" -o target/linux/ramips/dts/mt7621_jdcloud_re-sp-01b.dts
+# # #disable wireless
+# # #sed -i '/Device\/adslr_g7/i\define Device\/jdcloud_re-sp-01b\n  \$(Device\/dsa-migration)\n  \$(Device\/uimage-lzma-loader)\n  IMAGE_SIZE := 32448k\n  DEVICE_VENDOR := JDCloud\n  DEVICE_MODEL := RE-SP-01B\n  DEVICE_PACKAGES := lsblk block-mount e2fsprogs fdisk kmod-fs-ext4 kmod-sdhci-mt7620 kmod-usb3\nendef\nTARGET_DEVICES += jdcloud_re-sp-01b\n\n' target/linux/ramips/image/mt7621.mk
+# # sed -i '/Device\/adslr_g7/i\define Device\/jdcloud_re-sp-01b\n  \$(Device\/dsa-migration)\n  \$(Device\/uimage-lzma-loader)\n  IMAGE_SIZE := 32448k\n  DEVICE_VENDOR := JDCloud\n  DEVICE_MODEL := RE-SP-01B\n  DEVICE_PACKAGES := lsblk block-mount e2fsprogs fdisk kmod-fs-ext4 kmod-sdhci-mt7620 kmod-usb3 kmod-mt7603 kmod-mt7615e kmod-mt7615-firmware wpad-openssl\nendef\nTARGET_DEVICES += jdcloud_re-sp-01b\n\n' target/linux/ramips/image/mt7621.mk
+# # sed -i -e '/lenovo,newifi-d1|\\/i\        jdcloud,re-sp-01b|\\' -e '/ramips_setup_macs/,/}/{/ampedwireless,ally-00x19k/i\        jdcloud,re-sp-01b)\n\t\tlan_mac=$(mtd_get_mac_ascii u-boot-env mac)\n\t\twan_mac=$(macaddr_add "$lan_mac" 1)\n\t\tlabel_mac=$lan_mac\n\t\t;;
+# #     }' target/linux/ramips/mt7621/base-files/etc/board.d/02_network
+# # sed -i 's#key"'\''=//p'\''#& \| head -n1#' package/base-files/files/lib/functions/system.sh
 
-# change default package
-# sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ipv6 git git-gitweb git-http luci-app-bird1-ipv4 luci-app-bird1-ipv6 make python3/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
-# sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus luci-app-qbittorrent/'  include/target.mk
-sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/iptables/' -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 luci-app-qbittorrent luci-app-ssr-plus perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' -e '59s/luci-app-upnp luci-app-autoreboot/luci-app-amlogic luci-app-samba4 nano wget/' -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol/adguardhome luci-app-turboacc luci-app-wireguard/'  include/target.mk
-# sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot//' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd//' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
+# # change default package
+# # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 bird1c-ipv4 bird1c-ipv6 bird1cl-ipv4 bird1cl-ipv6 git git-gitweb git-http luci-app-bird1-ipv4 luci-app-bird1-ipv6 make python3/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
+# # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot/luci-app-udpxy luci-app-amlogic luci-app-samba4 nano/' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus luci-app-qbittorrent/'  include/target.mk
+# sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/iptables/' -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 luci-app-qbittorrent luci-app-ssr-plus perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' -e '59s/luci-app-upnp luci-app-autoreboot/luci-app-amlogic luci-app-samba4 nano wget/' -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-acme acme-dnsapi acme-deploy acme-notify luci-ssl-openssl/' -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol/adguardhome luci-app-turboacc luci-app-wireguard/'  include/target.mk
+# # sed -i -e 's/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4/' -e 's/luci-app-autoreboot//' -e 's/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd//' -e 's/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol /luci-app-turboacc luci-app-wireguard luci-app-ssr-plus /'  include/target.mk
