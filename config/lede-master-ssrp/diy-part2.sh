@@ -79,18 +79,20 @@ sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/c
 sed -i 's/default y/default n/g'  feeds/luci/applications/luci-app-turboacc/Makefile
 sed -i '12,15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 sed -i '1,3d' feeds/luci/applications/luci-app-vlmcsd/po/zh-cn/vlmcsd.po
-sed -i '81s/"Libev"/"None"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '142s/"n"/y"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '146s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
-sed -i '150s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '66s/^default.*//'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '83s/^default.*//'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '149s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '157s/"y"/n"/'  feeds/helloworld/luci-app-ssr-plus/Makefile
+sed -i '161s/"y"/n` "/'  feeds/helloworld/luci-app-ssr-plus/Makefile
 sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 sed -i '18,29d' package/lean/default-settings/files/zzz-default-settings
 sed -i 's/nas/services/g' feeds/luci/applications/luci-app-qbittorrent/luasrc/controller/qbittorrent.lua
-sed -i 's/nas/services/g' feeds/luci/applications/luci-app-cifs-mount/luasrc/controller/cifs.lua
+sed -i 's/nas/services/g' feeds/luci/applications/luci-app-nfs/luasrc/controller/nfs.lua
+sed -i 's/nas/services/g' feeds/luci/applications/luci-app-samba4/luasrc/controller/samba4.lua
 
 # Add package needed
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod/ddns-scripts_cloudflare.com-v4 luci-ssl-openssl luci-app-udpxy luci-app-acme acme-dnsapi acme-deploy acme-notify luci-app-qbittorrent luci-proto-wireguard luci-app-wireguard luci-app-samba4 nano htop curl/'  include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-app-qbittorrent luci-proto-wireguard luci-app-wireguard luci-app-samba4 nano htop curl/'  include/target.mk
 # Add nfs/emmc/upgrade
-sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
+sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd/luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
 # remove packages not needed
-sed -i -e '61s/luci-app-nlbwmon/luci-app-nfs luci-app-serverchan/' include/target.mk
+sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificates/luci-app-nfs luci-app-turboacc/' include/target.mk
