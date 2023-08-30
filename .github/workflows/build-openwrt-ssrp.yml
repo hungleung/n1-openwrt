@@ -185,10 +185,10 @@ on:
           - lee
 
 env:
-  FEEDS_CONF: config/${{ inputs.source_branch }}-ssrp-ospf/feeds.conf.default
-  CONFIG_FILE: config/${{ inputs.source_branch }}-ssrp-ospf/config
-  DIY_P1_SH: config/${{ inputs.source_branch }}-ssrp-ospf/diy-part1.sh
-  DIY_P2_SH: config/${{ inputs.source_branch }}-ssrp-ospf/diy-part2.sh
+  FEEDS_CONF: config/${{ inputs.source_branch }}-ssrp/feeds.conf.default
+  CONFIG_FILE: config/${{ inputs.source_branch }}-ssrp/config
+  DIY_P1_SH: config/${{ inputs.source_branch }}-ssrp/diy-part1.sh
+  DIY_P2_SH: config/${{ inputs.source_branch }}-ssrp/diy-part2.sh
   TZ: America/New_York
 
 jobs:
