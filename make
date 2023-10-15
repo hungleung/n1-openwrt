@@ -96,6 +96,7 @@ default_tags="stable"
 specific_tags="${default_tags}"
 # Set the list of kernels used by default
 rk3588_kernel=("5.10.1")
+h6_kernel=("6.5.1")
 stable_kernel=("6.1.1" "5.15.1")
 flippy_kernel=(${stable_kernel[*]})
 dev_kernel=(${stable_kernel[*]})
@@ -119,7 +120,7 @@ gh_token=""
 STEPS="[\033[95m STEPS \033[0m]"
 INFO="[\033[94m INFO \033[0m]"
 TIPS="[\033[93m TIPS \033[0m]"
-WARNING="[\033[93m WARNING \033[0m]"
+HINT="[\033[93m HINT \033[0m]"
 SUCCESS="[\033[92m SUCCESS \033[0m]"
 ERROR="[\033[91m ERROR \033[0m]"
 #
@@ -399,21 +400,12 @@ query_kernel() {
             # Select the kernel list
             kd="${k}"
             case "${k}" in
-            stable)
-                down_kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                down_kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                down_kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                down_kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                down_kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) down_kernel_list=(${stable_kernel[*]}) ;;
+            flippy) down_kernel_list=(${flippy_kernel[*]}) ;;
+            dev) down_kernel_list=(${dev_kernel[*]}) ;;
+            beta) down_kernel_list=(${beta_kernel[*]}) ;;
+            rk3588) down_kernel_list=(${rk3588_kernel[*]}) ;;
+            h6) down_kernel_list=(${h6_kernel[*]}) ;;
             specific)
                 down_kernel_list=(${specific_kernel[*]})
                 kd="${specific_tags}"
@@ -457,28 +449,13 @@ query_kernel() {
 
             # Reset the kernel array to the latest kernel version
             case "${k}" in
-            stable)
-                unset stable_kernel
-                stable_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            flippy)
-                unset flippy_kernel
-                flippy_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            dev)
-                unset dev_kernel
-                dev_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            beta)
-                unset beta_kernel
-                beta_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            rk3588)
-                unset rk3588_kernel
-                rk3588_kernel=(${tmp_arr_kernels[*]})
-                ;;
+            stable) stable_kernel=(${tmp_arr_kernels[*]}) ;;
+            flippy) flippy_kernel=(${tmp_arr_kernels[*]}) ;;
+            dev) dev_kernel=(${tmp_arr_kernels[*]}) ;;
+            beta) beta_kernel=(${tmp_arr_kernels[*]}) ;;
+            rk3588) rk3588_kernel=(${tmp_arr_kernels[*]}) ;;
+            h6) h6_kernel=(${tmp_arr_kernels[*]}) ;;
             specific)
-                unset specific_kernel
                 specific_kernel=(${tmp_arr_kernels[*]})
                 ;;
             *) error_msg "Invalid tags." ;;
@@ -515,21 +492,12 @@ download_kernel() {
             # Set the kernel download list
             kd="${k}"
             case "${k}" in
-            stable)
-                down_kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                down_kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                down_kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                down_kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                down_kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) down_kernel_list=(${stable_kernel[*]}) ;;
+            flippy) down_kernel_list=(${flippy_kernel[*]}) ;;
+            dev) down_kernel_list=(${dev_kernel[*]}) ;;
+            beta) down_kernel_list=(${beta_kernel[*]}) ;;
+            rk3588) down_kernel_list=(${rk3588_kernel[*]}) ;;
+            h6) down_kernel_list=(${h6_kernel[*]}) ;;
             specific)
                 down_kernel_list=(${specific_kernel[*]})
                 kd="${specific_tags}"
@@ -787,9 +755,9 @@ replace_kernel() {
 
     # 01. For /boot five files
     tar -mxzf ${kernel_boot} -C ${tag_bootfs}
+    [[ "${PLATFORM}" == "allwinner" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} Image)
     [[ "${PLATFORM}" == "amlogic" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} zImage)
     [[ "${PLATFORM}" == "rockchip" ]] && (cd ${tag_bootfs} && ln -sf uInitrd-${kernel_name} uInitrd && ln -sf vmlinuz-${kernel_name} Image)
-    [[ "${PLATFORM}" == "allwinner" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} Image)
     [[ "$(ls ${tag_bootfs}/*${kernel_name} -l 2>/dev/null | grep "^-" | wc -l)" -ge "2" ]] || error_msg "The /boot files is missing."
     [[ "${PLATFORM}" == "amlogic" ]] && get_textoffset "${tag_bootfs}/zImage"
 
@@ -850,7 +818,7 @@ refactor_bootfs() {
     # Edit the armbianEnv.txt
     armbianenv_conf_file="armbianEnv.txt"
     [[ -f "${armbianenv_conf_file}" ]] && {
-        sed -i "s|^fdtfile=.*|fdtfile=${PLATFORM}/${FDTFILE}|g" ${armbianenv_conf_file}
+        sed -i "s|\(fdtfile=.*\/\)[^/]*$|\1${FDTFILE}|g" ${armbianenv_conf_file}
         sed -i "s|^rootdev=.*|rootdev=${armbianenv_rootdev}|g" ${armbianenv_conf_file}
         sed -i "s|^rootfstype=.*|rootfstype=btrfs|g" ${armbianenv_conf_file}
         sed -i "s|^rootflags=.*|rootflags=${armbianenv_rootflags}|g" ${armbianenv_conf_file}
@@ -1109,21 +1077,12 @@ loop_make() {
             # Determine kernel tags
             kd="${KERNEL_TAGS}"
             case "${KERNEL_TAGS}" in
-            stable)
-                kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) kernel_list=(${stable_kernel[*]}) ;;
+            flippy) kernel_list=(${flippy_kernel[*]}) ;;
+            dev) kernel_list=(${dev_kernel[*]}) ;;
+            beta) kernel_list=(${beta_kernel[*]}) ;;
+            rk3588) kernel_list=(${rk3588_kernel[*]}) ;;
+            h6) kernel_list=(${h6_kernel[*]}) ;;
             [0-9]*)
                 kernel_list=(${specific_kernel[*]})
                 kd="${specific_tags}"
@@ -1149,7 +1108,7 @@ loop_make() {
                     echo -ne "(${j}.${i}) Start making OpenWrt [\033[92m ${board} - ${kd}/${kernel} \033[0m]. "
                     now_remaining_space="$(df -Tk ${current_path} | grep '/dev/' | awk '{print $5}' | echo $(($(xargs) / 1024 / 1024)))"
                     if [[ "${now_remaining_space}" -le "3" ]]; then
-                        echo -e "${WARNING} Remaining space is less than 3G, exit this build."
+                        echo -e "${HINT} Remaining space is less than 3G, exit this build."
                         break
                     else
                         echo "Remaining space is ${now_remaining_space}G."
