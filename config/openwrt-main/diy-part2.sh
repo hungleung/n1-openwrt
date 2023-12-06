@@ -26,13 +26,13 @@ echo "DISTRIB_SOURCECODE='official'" >>package/base-files/files/etc/openwrt_rele
 svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
 
 # remove v2ray-geodata package from feeds (openwrt-22.03 & master)
-rm -rf feeds/packages/net/v2ray-geodata
+# rm -rf feeds/packages/net/v2ray-geodata
 
-git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+# git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+# git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
-rm -rf feeds/packages/lang/golang
-svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
+# rm -rf feeds/packages/lang/golang
+# svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang feeds/packages/lang/golang
 
 # coolsnowwolf default software package replaced with Lienol related software package
 # rm -rf feeds/packages/utils/{containerd,libnetwork,runc,tini}
@@ -51,18 +51,12 @@ svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang fe
 # ------------------------------- Other ends -------------------------------
 
 
+# change default lan address and hostname
+# verified to be working
 sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_generate
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
-sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
-sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
-# sed -i '281s/y/n/'  config/Config-images.in
-# sed -i '293s/y/n/'  config/Config-images.in
-# sed -i '70s/y/n/'  config/Config-images.in
-# sed -i '80s/y/n/'  config/Config-images.in
-sed -i 's/Dynamic DNS/DDNS/g'  feeds/luci/applications/luci-app-ddns/luasrc/controller/ddns.lua
-sed -i 's/ACME certs/ACME/' feeds/luci/applications/luci-app-acme/luasrc/controller/acme.lua
-sed -i 's/_("udpxy")/_("IPTV")/' feeds/luci/applications/luci-app-udpxy/luasrc/controller/udpxy.lua 
-sed -i '12,15d' feeds/luci/applications/luci-app-acme/po/zh-cn/acme.po
 
-sed -i -e '56s/dnsmasq/luci-compat luci-app-mosdns adguardhome dnsmasq-full luci-app-wireguard luci-proto-wireguard wireguard-tools kmod-wireguard perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen luci-app-amlogic/' include/target.mk
-sed -i '62,63d' include/target.mk
+# Add package needed
+# Add nfs/emmc/upgrade
+sed -i -e '16s/dropbear/luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
+# remove packages not needed
