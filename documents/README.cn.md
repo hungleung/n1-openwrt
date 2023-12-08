@@ -52,6 +52,8 @@ Github Actions 是 Microsoft 推出的一项服务，它提供了性能配置非
       - [10.8.2 使用 Amlogic 刷机工具恢复](#1082-使用-amlogic-刷机工具恢复)
     - [10.9 在安装了主线 u-boot 后无法启动](#109-在安装了主线-u-boot-后无法启动)
     - [10.10 设置盒子从 USB/TF/SD 中启动](#1010-设置盒子从-usbtfsd-中启动)
+      - [10.10.1 初次安装 OpenWrt 系统](#10101-初次安装-openwrt-系统)
+      - [10.10.2 重新安装 OpenWrt 系统](#10102-重新安装-openwrt-系统)
     - [10.11 OpenWrt 必选项](#1011-openwrt-必选项)
 
 ## 1. 注册自己的 Github 的账户
@@ -185,7 +187,7 @@ OpenWrt 官方网站提供了制作好的 openwrt-imagebuilder-*-armvirt-64.Linu
 
 ## 5. 编译固件
 
-默认系统的配置信息记录在 [/etc/model_database.conf](../openwrt-files/common-files/etc/model_database.conf) 文件里，其中的 `BOARD` 名字要求唯一。
+默认系统的配置信息记录在 [/etc/model_database.conf](../make-openwrt/openwrt-files/common-files/etc/model_database.conf) 文件里，其中的 `BOARD` 名字要求唯一。
 
 其中 `BUILD` 的值是 `yes` 的是默认打包的部分盒子的系统，这些盒子可以直接使用。默认值是 `no` 的没有打包，这些没有打包的盒子使用时需要下载相同 `FAMILY` 的打包好的系统（推荐下载 `5.15/5.4` 内核的系统），在写入 `USB` 后，可以在电脑上打开 `USB 中的 boot 分区`，修改 `/boot/uEnv.txt` 文件中 `FDT 的 dtb 名称`，适配列表中的其他盒子。
 
@@ -299,7 +301,11 @@ UPLOAD_WETRANSFER: false
 
 ### 8.1 在编译时集成 luci-app-amlogic 操作面板
 
-1. `svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic`
+1. 获得 luci-app-amlogic 源码，把源码放到 package 目录下，方法如下：
+```shell
+rm -rf package/luci-app-amlogic
+git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
+```
 2. 在执行 `menuconfig` 后，可以选择插件 `LuCI ---> 3. Applications  ---> <*> luci-app-amlogic`
 
 插件的更多说明详见：[https://github.com/ophub/luci-app-amlogic](https://github.com/ophub/luci-app-amlogic)
@@ -358,7 +364,6 @@ REPO_BRANCH: openwrt-21.02
     openwrt_kernel: ${{ inputs.openwrt_kernel }}
     auto_kernel: ${{ inputs.auto_kernel }}
     openwrt_size: ${{ inputs.openwrt_size }}
-    gh_token: ${{ secrets.GH_TOKEN }}
 ```
 参考打包命令的相关[参数说明](https://github.com/ophub/amlogic-s9xxx-openwrt/blob/main/README.cn.md#github-actions-输入参数说明)。以上设置选项可以通过写入固定值来设置，也可以通过 `Actions` 面板进行选择：
 <div style="width:100%;margin-top:40px;margin:5px;">
@@ -440,7 +445,9 @@ opkg list | grep <pkgs>                           #查找与关键字匹配的�
 
 ### 10.8 如何恢复原安卓 TV 系统
 
-通常使用 openwrt-ddbr 备份恢复，或者使用 Amlogic 刷机工具恢复原安卓 TV 系统。
+通常使用 `openwrt-ddbr` 对设备的安卓 TV 系统进行备份和恢复。
+
+除此之外也可以通过线刷的方法，将安卓系统刷入 eMMC 中，安卓系统的下载镜像可在 [Tools](https://github.com/ophub/kernel/releases/tag/tools) 中查找。
 
 #### 10.8.1 使用 openwrt-ddbr 备份恢复
 
@@ -501,6 +508,10 @@ Hit any key to stop autoboot: 0
 
 ### 10.10 设置盒子从 USB/TF/SD 中启动
 
+根据自己盒子的情况，分别使用初次安装和重新安装 OpenWrt 系统的两种方法。
+
+#### 10.10.1 初次安装 OpenWrt 系统
+
 - 把刷好固件的 USB/TF/SD 插入盒子。
 - 开启开发者模式: 设置 → 关于本机 → 版本号 (如: X96max plus...), 在版本号上快速连击 5 次鼠标左键, 看到系统显示 `开启开发者模式` 的提示。
 - 开启 USB 调试模式: 系统 → 高级选选 → 开发者选项 (设置 `开启USB调试` 为启用)。启用 `ADB` 调试。
@@ -508,6 +519,11 @@ Hit any key to stop autoboot: 0
 - 进入 `cmd` 命令模式。输入 `adb connect 192.168.1.137` 命令（其中的 ip 根据你的盒子修改，可以到盒子所接入的路由器设备里查看），如果链接成功会显示 `connected to 192.168.1.137:5555`
 - 输入 `adb shell reboot update` 命令，盒子将重启并从你插入的 USB/TF/SD 启动，从浏览器访问固件的 IP 地址，或者 SSH 访问即可进入固件。
 - 登录 OpenWrt 系统: 将你的盒子与电脑进行直连 → 关闭电脑的 WIFI 选项，只使用有线网卡 → 将有线网卡的网络设置为和 OpenWrt 相同的网段，如果 OpenWrt 的默认 IP 是: `192.168.1.1` ，你可以设置电脑的 IP 为 `192.168.1.2` ，子网掩码设置为 `255.255.255.0`, 除这 2 个选项外，其他选项不用设置。你就可以从浏览器进入 OpwnWrt 了，默认 IP : `192.168.1.1`, 默认账号: `root`, 默认密码: `password`
+
+#### 10.10.2 重新安装 OpenWrt 系统
+
+- 正常情况下，直接把刷写好 OpenWrt 的 U 盘插入 USB 即可直接从 U 盘中启动。USB 启动比 eMMC 具有优先启动权。
+- 个别设备可能出现无法从 U 盘启动的现象，可以先把 eMMC 里 OpenWrt 系统 `/boot` 目录下的 `boot.scr` 文件改个名字，例如 `boot.scr.bak`，然后再插入 U 盘启动，这样就可以从 U 盘启动了。
 
 ### 10.11 OpenWrt 必选项
 
@@ -540,9 +556,14 @@ Languages -> Perl
              -> perlbase-time
              -> perlbase-unicode
              -> perlbase-utf8
+          -> Python
+             -> Python3-logging
+             -> Python3-ctypes
+             -> Python3-yaml
 
 
 Network -> File Transfer -> curl、wget-ssl
+        -> Version Control Systems -> git
         -> WirelessAPD   -> hostapd-common
                          -> wpa-cli
                          -> wpad-basic
@@ -555,7 +576,7 @@ Utilities -> Compression -> bsdtar、pigz
                            e2fsprogs、f2fs-tools、f2fsck、lsattr、mkf2fs、xfs-fsck、xfs-mkfs
           -> Shells -> bash
           -> Time Zone info -> zoneinfo-america、zoneinfo-asia、zoneinfo-core、zoneinfo-europe (other)
-          -> acpid、coremark、coreutils(-> coreutils-base64、coreutils-nohup)、gawk、getopt、
-             jq、losetup、pv、tar、uuidgen
+          -> acpid、coremark、coreutils(-> coreutils-base64、coreutils-nohup、coreutils-timeout)、gawk、getopt、
+             jq、lm-sensors、losetup、pv、tar、uuidgen
 ```
 

@@ -52,6 +52,8 @@ Github Actions is a service launched by Microsoft. It provides a very well-confi
       - [10.8.2 Recovery Using Amlogic Flashing Tool](#1082-recovery-using-amlogic-flashing-tool)
       - [10.9 Unable to Boot After Installing Mainline u-boot](#109-unable-to-boot-after-installing-mainline-u-boot)
     - [10.10 Setting up the Box to Boot from USB/TF/SD](#1010-setting-up-the-box-to-boot-from-usbtfsd)
+      - [10.10.1 Initial Installation of OpenWrt System](#10101-initial-installation-of-openwrt-system)
+      - [10.10.2 Reinstallation of OpenWrt System](#10102-reinstallation-of-openwrt-system)
     - [10.11 Required OpenWrt Options](#1011-required-openwrt-options)
 
 ## 1. Register Your Own Github Account
@@ -187,7 +189,7 @@ This repository provides a one-click manufacturing service. You just need to pas
 
 ## 5. Firmware Compilation
 
-The configuration information of the default system is recorded in the [/etc/model_database.conf](../openwrt-files/common-files/etc/model_database.conf) file, where the `BOARD` name is required to be unique.
+The configuration information of the default system is recorded in the [/etc/model_database.conf](../make-openwrt/openwrt-files/common-files/etc/model_database.conf) file, where the `BOARD` name is required to be unique.
 
 Among them, the parts of the box system that are packaged by default when the value of `BUILD` is `yes` can be used directly. Those that are not packaged by default when the value is `no` need to download the packaged system of the same `FAMILY` (recommended to download the system of kernel `5.15/5.4`), and after writing to the `USB`, the `boot partition` in the `USB` can be opened on the computer, and the `FDT dtb name` in the `/boot/uEnv.txt` file can be modified to adapt to other boxes in the list.
 
@@ -303,7 +305,11 @@ The support for uploading to third parties comes from https://github.com/Mikubil
 
 ### 8.1 Integrating luci-app-amlogic Operation Panel at Compilation Time
 
-1. `svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic`
+1. Get the source code of the plugin `luci-app-amlogic`:
+```shell
+rm -rf package/luci-app-amlogic
+git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
+```
 2. After executing `menuconfig`, you can select the plugin `LuCI ---> 3. Applications  ---> <*> luci-app-amlogic`
 
 For more instructions on the plugin, see: [https://github.com/ophub/luci-app-amlogic](https://github.com/ophub/luci-app-amlogic)
@@ -363,7 +369,6 @@ Around line 139, look for the compile step titled `Build OpenWrt firmware`, and 
     openwrt_kernel: ${{ inputs.openwrt_kernel }}
     auto_kernel: ${{ inputs.auto_kernel }}
     openwrt_size: ${{ inputs.openwrt_size }}
-    gh_token: ${{ secrets.GH_TOKEN }}
 ```
 Refer to the [parameter instructions](../README.md#gitHub-actions-input-parameters-explanation) related to the packaging command. The above setting options can be set by writing in fixed values, or they can be selected through the `Actions` panel:
 <div style="width:100%;margin-top:40px;margin:5px;">
@@ -445,8 +450,9 @@ For more help, please check [packages](https://openwrt.org/packages/start)
 
 ### 10.8 How to restore the original Android TV system
 
-Usually use openwrt-ddbr for backup and recovery, or use Amlogic flashing tool to restore the original Android TV system.
+The Android TV system on the device is usually backed up and restored using `openwrt-ddbr`.
 
+In addition, the Android system can also be flashed into eMMC using the method of flashing via a cable. The download image of the Android system can be found in [Tools](https://github.com/ophub/kernel/releases/tag/tools).
 
 #### 10.8.1 Backup and Recovery Using openwrt-ddbr
 
@@ -507,6 +513,10 @@ If your phenomenon is as shown above, then you need to solder a resistor on the 
 
 ### 10.10 Setting up the Box to Boot from USB/TF/SD
 
+Based on the situation of your own device, there are two methods to use: initial installation and reinstallation of the OpenWrt system.
+
+#### 10.10.1 Initial Installation of OpenWrt System
+
 - Insert the USB/TF/SD with the flashed firmware into the box.
 - Enable developer mode: Settings → About Device → Version number (e.g., X96max plus...), quickly click the left mouse button 5 times on the version number, until the system shows a prompt saying `Developer mode is enabled`.
 - Enable USB debugging mode: System → Advanced options → Developer options (set `Enable USB debugging` to enabled). Enable `ADB` debugging.
@@ -514,6 +524,11 @@ If your phenomenon is as shown above, then you need to solder a resistor on the 
 - Enter `cmd` command mode. Type the `adb connect 192.168.1.137` command (modify the IP according to your box, you can check it in the router device that the box is connected to), if the connection is successful, it will display `connected to 192.168.1.137:5555`.
 - Type the `adb shell reboot update` command, the box will restart and boot from the USB/TF/SD you inserted, access the firmware IP address from the browser, or SSH access to enter the firmware.
 - Login to the OpenWrt system: Directly connect your box to your computer → Turn off the WIFI option of the computer, only use the wired network card → Set the network of the wired network card to the same segment as OpenWrt, if the default IP of OpenWrt is: `192.168.1.1`, you can set the computer's IP to `192.168.1.2`, the subnet mask is set to `255.255.255.0`, besides these 2 options, no other options need to be set. Then you can enter OpenWrt from the browser. The default IP: `192.168.1.1`, default account: `root`, default password: `password`.
+
+#### 10.10.2 Reinstallation of OpenWrt System
+
+- In normal situations, you can directly insert the USB flash drive with OpenWrt installed and boot from it. USB booting takes priority over eMMC.
+- In some cases, the device may not boot from the USB flash drive. In such cases, you can rename the `boot.scr` file in the `/boot` directory of the OpenWrt system on the eMMC. For example, you can rename it to `boot.scr.bak`. After that, you can insert the USB flash drive and boot from it. This way, you will be able to boot from the USB flash drive.
 
 ### 10.11 Required OpenWrt Options
 
@@ -546,9 +561,14 @@ Languages -> Perl
              -> perlbase-time
              -> perlbase-unicode
              -> perlbase-utf8
+          -> Python
+             -> Python3-logging
+             -> Python3-ctypes
+             -> Python3-yaml
 
 
 Network -> File Transfer -> curl、wget-ssl
+        -> Version Control Systems -> git
         -> WirelessAPD   -> hostapd-common
                          -> wpa-cli
                          -> wpad-basic
@@ -561,7 +581,7 @@ Utilities -> Compression -> bsdtar、pigz
                            e2fsprogs、f2fs-tools、f2fsck、lsattr、mkf2fs、xfs-fsck、xfs-mkfs
           -> Shells -> bash
           -> Time Zone info -> zoneinfo-america、zoneinfo-asia、zoneinfo-core、zoneinfo-europe (other)
-          -> acpid、coremark、coreutils(-> coreutils-base64、coreutils-nohup)、gawk、getopt、
-             jq、losetup、pv、tar、uuidgen
+          -> acpid、coremark、coreutils(-> coreutils-base64、coreutils-nohup、coreutils-timeout)、gawk、getopt、
+             jq、lm-sensors、losetup、pv、tar、uuidgen
 ```
 

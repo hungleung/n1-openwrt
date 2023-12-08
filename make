@@ -29,6 +29,7 @@
 # init_var           : Initialize all variables
 # check_data         : Check the validity of the data
 # find_openwrt       : Find OpenWrt file (openwrt-armvirt/*rootfs.tar.gz)
+# git_pull_dir       : Download the files from the git repository
 # download_depends   : Download the dependency files
 # query_kernel       : Query the latest kernel version
 # check_kernel       : Check kernel files integrity
@@ -69,19 +70,13 @@ host_release="$(cat /etc/os-release | grep '^VERSION_CODENAME=.*' | cut -d'=' -f
 op_release="etc/flippy-openwrt-release"
 
 # Dependency files download repository
-depends_repo="https://github.com/ophub/amlogic-s9xxx-armbian/tree/main/build-armbian"
-# Convert depends repository address to svn format
-depends_repo="${depends_repo//tree\/main/trunk}"
-
+depends_repo="https://github.com/ophub/amlogic-s9xxx-armbian"
+# U-BOOT files download repository
+uboot_repo="https://github.com/ophub/u-boot"
 # Firmware files download repository
-firmware_repo="https://github.com/ophub/firmware/tree/main/firmware"
-# Convert firmware repository address to svn format
-firmware_repo="${firmware_repo//tree\/main/trunk}"
-
+firmware_repo="https://github.com/ophub/firmware"
 # Install/Update script files download repository
-script_repo="https://github.com/ophub/luci-app-amlogic/tree/main/luci-app-amlogic"
-# Convert script repository address to svn format
-script_repo="${script_repo//tree\/main/trunk}"
+script_repo="https://github.com/ophub/luci-app-amlogic"
 
 # Set the kernel download repository from github.com
 kernel_repo="https://github.com/ophub/kernel"
@@ -91,10 +86,13 @@ default_tags="stable"
 specific_tags="${default_tags}"
 # Set the list of kernels used by default
 rk3588_kernel=("5.10.1")
+rk35xx_kernel=("5.10.1")
+h6_kernel=("6.6.1")
 stable_kernel=("6.1.1" "5.15.1")
-flippy_kernel=(${stable_kernel[*]})
-dev_kernel=(${stable_kernel[*]})
-beta_kernel=(${stable_kernel[*]})
+flippy_kernel=(${stable_kernel[@]})
+dev_kernel=(${stable_kernel[@]})
+beta_kernel=(${stable_kernel[@]})
+specific_kernel=()
 # Set to automatically use the latest kernel
 auto_kernel="true"
 
@@ -107,14 +105,11 @@ root_mb="1024"
 # Set OpenWrt builder signature
 builder_name=""
 
-# Get gh_token for api.github.com
-gh_token=""
-
 # Set font color
 STEPS="[\033[95m STEPS \033[0m]"
 INFO="[\033[94m INFO \033[0m]"
 TIPS="[\033[93m TIPS \033[0m]"
-WARNING="[\033[93m WARNING \033[0m]"
+PROMPT="[\033[93m PROMPT \033[0m]"
 SUCCESS="[\033[92m SUCCESS \033[0m]"
 ERROR="[\033[91m ERROR \033[0m]"
 #
@@ -171,7 +166,7 @@ init_var() {
     echo -e "${STEPS} Start Initializing Variables..."
 
     # If it is followed by [ : ], it means that the option requires a parameter value
-    get_all_ver="$(getopt "b:r:u:k:a:s:n:g:" "${@}")"
+    get_all_ver="$(getopt "b:r:u:k:a:s:n:" "${@}")"
 
     while [[ -n "${1}" ]]; do
         case "${1}" in
@@ -207,6 +202,7 @@ init_var() {
                 stable_kernel=(${2})
                 dev_kernel=(${2})
                 beta_kernel=(${2})
+                specific_kernel=(${2})
                 IFS="${oldIFS}"
                 shift
             else
@@ -235,14 +231,6 @@ init_var() {
                 shift
             else
                 error_msg "Invalid -n parameter [ ${2} ]!"
-            fi
-            ;;
-        -g | --Gh_token)
-            if [[ -n "${2}" ]]; then
-                gh_token="${2}"
-                shift
-            else
-                error_msg "Invalid -g parameter [ ${2} ]!"
             fi
             ;;
         *)
@@ -279,7 +267,7 @@ check_data() {
         board_list=":($(echo ${make_board} | sed -e 's/_/\|/g')):(yes|no)"
         make_openwrt=($(echo ${make_board} | sed -e 's/_/ /g'))
     fi
-    [[ "${#make_openwrt[*]}" -eq "0" ]] && error_msg "The board is missing, stop making."
+    [[ "${#make_openwrt[@]}" -eq "0" ]] && error_msg "The board is missing, stop making."
 
     # Get a list of kernel
     kernel_from=($(
@@ -288,26 +276,28 @@ check_data() {
             grep -E "^[^#].*${board_list}$" | awk -F':' '{print $9}' |
             sort -u | xargs
     ))
-    [[ "${#kernel_from[*]}" -eq "0" ]] && error_msg "Missing [ KERNEL_TAGS ] settings, stop building."
+    [[ "${#kernel_from[@]}" -eq "0" ]] && error_msg "Missing [ KERNEL_TAGS ] settings, stop building."
     # Replace custom kernel tags
     [[ -n "${kernel_usage}" ]] && {
         specific_tags="${kernel_usage}"
-        kernel_from=(${kernel_from[*]//${default_tags}/${kernel_usage}})
+        kernel_from=(${kernel_from[@]//${default_tags}/${kernel_usage}})
     }
 
-    # The [ specific kernel ], Use the [ kernel version number ], such as 5.15.y, 6.1.y, etc. download from [ kernel_stable ].
-    specific_kernel=($(echo ${kernel_from[*]} | sed -e 's/[ ][ ]*/\n/g' | grep -E "^[0-9]+" | sort -u | xargs))
+    # The [ specific kernel ], Use the [ kernel version number ], such as 5.15.y, 6.1.y, etc. default download from [ kernel_stable ].
+    [[ "${auto_kernel}" == "true" || "${#specific_kernel[@]}" -eq "0" ]] && {
+        specific_kernel=($(echo ${kernel_from[@]} | sed -e 's/[ ][ ]*/\n/g' | grep -E "^[0-9]+" | sort -u | xargs))
+    }
 
     # The [ suffix ] of KERNEL_TAGS starts with a [ letter ], such as kernel_stable, kernel_rk3588, etc.
-    tags_list=($(echo ${kernel_from[*]} | sed -e 's/[ ][ ]*/\n/g' | grep -E "^[a-z]" | sort -u | xargs))
+    tags_list=($(echo ${kernel_from[@]} | sed -e 's/[ ][ ]*/\n/g' | grep -E "^[a-z]" | sort -u | xargs))
     # Add the specific kernel to the list
-    [[ "${#specific_kernel[*]}" -ne "0" ]] && tags_list=(${tags_list[*]} "specific")
+    [[ "${#specific_kernel[@]}" -ne "0" ]] && tags_list=(${tags_list[@]} "specific")
     # Check the kernel list
-    [[ "${#tags_list[*]}" -eq "0" ]] && error_msg "The [ tags_list ] is missing, stop building."
+    [[ "${#tags_list[@]}" -eq "0" ]] && error_msg "The [ tags_list ] is missing, stop building."
 
     # Convert kernel repository address to api format
     [[ "${kernel_repo}" =~ ^https: ]] && kernel_repo="$(echo ${kernel_repo} | awk -F'/' '{print $4"/"$5}')"
-    kernel_api="https://api.github.com/repos/${kernel_repo}"
+    kernel_api="https://github.com/${kernel_repo}"
 }
 
 find_openwrt() {
@@ -348,37 +338,77 @@ find_openwrt() {
     rm -rf ${temp_dir}
 }
 
+git_pull_dir() {
+    cd ${current_path}
+
+    # Check git_pull_dir parameters
+    git_repo="${1}"
+    git_branch="${2}"
+    git_path="${3}"
+    [[ -n "${git_repo}" && -n "${git_branch}" && -n "${git_path}" ]] || {
+        error_msg "git_pull_dir parameter is missing: [ ${git_repo}, ${git_branch}, ${git_path} ]"
+    }
+
+    # Git clone the repository to the temporary directory
+    git clone --quiet --single-branch --depth=1 --branch=${git_branch} ${git_repo} ${git_path}
+    [[ "${?}" -eq "0" ]] || error_msg "Failed to clone the [ ${git_repo} ] repository."
+}
+
 download_depends() {
     cd ${current_path}
     echo -e "${STEPS} Start downloading dependency files..."
 
-    # Download platform files
-    svn co ${depends_repo}/armbian-files/platform-files ${platform_files} --force
-    # Remove the special files in the [ sbin ] directory of the Armbian system
-    rm -rf $(find ${platform_files} -type d -name "sbin")
-
-    # Download different files
-    svn co ${depends_repo}/armbian-files/different-files ${different_files} --force
-
-    # Download u-boot files
-    if [[ -d "${uboot_path}" ]]; then
-        svn up ${uboot_path} --force
-    else
-        svn co ${depends_repo}/u-boot ${uboot_path} --force
-    fi
+    # Download Armbian u-boot files
+    git_path="$(mktemp -d)"
+    git_pull_dir ${uboot_repo} main ${git_path}
+    # Move the files to the storage directory
+    mkdir -p ${uboot_path}
+    cp -af --no-preserve=ownership ${git_path}/u-boot/* ${uboot_path}
+    [[ "${?}" -eq "0" ]] || error_msg "Failed to move the [ u-boot ] files to the [ ${uboot_path} ] directory."
+    # Delete temporary files
+    rm -rf ${git_path}
 
     # Download Armbian firmware files
-    svn co ${firmware_repo} ${firmware_path} --force
+    git_path="$(mktemp -d)"
+    git_pull_dir ${firmware_repo} main ${git_path}
+    # Move the files to the storage directory
+    mkdir -p ${firmware_path}
+    cp -af --no-preserve=ownership ${git_path}/firmware/* ${firmware_path}
+    [[ "${?}" -eq "0" ]] && echo -e "${INFO} firmware download completed." || error_msg "firmware download failed."
+    # Delete temporary files
+    rm -rf ${git_path}
 
+    # Download platform files
+    git_path="$(mktemp -d)"
+    git_pull_dir ${depends_repo} main ${git_path}
+    # Move the files to the storage directory
+    cp -af --no-preserve=ownership ${git_path}/build-armbian/armbian-files/platform-files/* ${platform_files}
+    # Remove the special files in the [ sbin ] directory of the Armbian system
+    rm -rf $(find ${platform_files} -type d -name "sbin")
+    # Download different files
+    cp -af --no-preserve=ownership ${git_path}/build-armbian/armbian-files/different-files/* ${different_files}
+    [[ "${?}" -eq "0" ]] && echo -e "${INFO} different-files download completed." || error_msg "different-files download failed."
     # Download balethirq related files
-    svn export ${depends_repo}/armbian-files/common-files/usr/sbin/balethirq.pl ${common_files}/usr/sbin --force
-    svn export ${depends_repo}/armbian-files/common-files/etc/balance_irq ${common_files}/etc --force
+    cp -f --no-preserve=ownership ${git_path}/build-armbian/armbian-files/common-files/usr/sbin/balethirq.pl ${common_files}/usr/sbin
+    cp -f --no-preserve=ownership ${git_path}/build-armbian/armbian-files/common-files/etc/balance_irq ${common_files}/etc
+    [[ "${?}" -eq "0" ]] && echo -e "${INFO} balethirq download completed." || error_msg "balethirq download failed."
+    # Delete temporary files
+    rm -rf ${git_path}
 
     # Download install/update and other related files
-    svn export ${script_repo}/root/usr/sbin ${common_files}/usr/sbin --force
+    git_path="$(mktemp -d)"
+    git_pull_dir ${script_repo} main ${git_path}
+    # Move the files to the storage directory
+    cp -af --no-preserve=ownership ${git_path}/luci-app-amlogic/root/usr/sbin/* ${common_files}/usr/sbin
+    [[ "${?}" -eq "0" ]] && echo -e "${INFO} app/sbin download completed." || error_msg "app/sbin download failed."
     chmod +x ${common_files}/usr/sbin/*
-    svn export ${script_repo}/root/usr/share/amlogic ${common_files}/usr/share/amlogic --force
+    # Move the files to the storage directory
+    mkdir -p ${common_files}/usr/share/amlogic
+    cp -af --no-preserve=ownership ${git_path}/luci-app-amlogic/root/usr/share/amlogic ${common_files}/usr/share/amlogic
+    [[ "${?}" -eq "0" ]] && echo -e "${INFO} app/share download completed." || error_msg "app/share download failed."
     chmod +x ${common_files}/usr/share/amlogic/*
+    # Delete temporary files
+    rm -rf ${git_path}
 }
 
 query_kernel() {
@@ -386,28 +416,20 @@ query_kernel() {
 
     # Check the version on the kernel repository
     x="1"
-    for k in ${tags_list[*]}; do
+    for k in "${tags_list[@]}"; do
         {
             # Select the kernel list
             kd="${k}"
             case "${k}" in
-            stable)
-                down_kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                down_kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                down_kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                down_kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                down_kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) down_kernel_list=(${stable_kernel[@]}) ;;
+            flippy) down_kernel_list=(${flippy_kernel[@]}) ;;
+            dev) down_kernel_list=(${dev_kernel[@]}) ;;
+            beta) down_kernel_list=(${beta_kernel[@]}) ;;
+            rk3588) down_kernel_list=(${rk3588_kernel[@]}) ;;
+            rk35xx) down_kernel_list=(${rk35xx_kernel[@]}) ;;
+            h6) down_kernel_list=(${h6_kernel[@]}) ;;
             specific)
-                down_kernel_list=(${specific_kernel[*]})
+                down_kernel_list=(${specific_kernel[@]})
                 kd="${specific_tags}"
                 ;;
             *) error_msg "Invalid tags." ;;
@@ -416,24 +438,18 @@ query_kernel() {
             # Query the name of the latest kernel version
             tmp_arr_kernels=()
             i=1
-            for kernel_var in ${down_kernel_list[*]}; do
+            for kernel_var in "${down_kernel_list[@]}"; do
                 echo -e "${INFO} (${x}.${i}) Auto query the latest kernel version for [ ${k} - ${kernel_var} ]"
 
                 # Identify the kernel <VERSION> and <PATCHLEVEL>, such as [ 6.1 ]
                 kernel_verpatch="$(echo ${kernel_var} | awk -F '.' '{print $1"."$2}')"
 
-                # Set the token for api.github.com
-                [[ -n "${gh_token}" ]] && ght="-H \"Authorization: Bearer ${gh_token}\"" || ght=""
-
                 # Query the latest kernel version
                 latest_version="$(
-                    curl -s \
-                        -H "Accept: application/vnd.github+json" \
-                        ${ght} \
-                        ${kernel_api}/releases/tags/kernel_${kd} |
-                        jq -r '.assets[].name' |
-                        grep -oE "${kernel_verpatch}\.[0-9]+" |
-                        sort -rV | head -n 1
+                    curl -fsSL \
+                        ${kernel_api}/releases/expanded_assets/kernel_${kd} |
+                        grep -oE "${kernel_verpatch}.[0-9]+.tar.gz" | sed 's/.tar.gz//' |
+                        sort -urV | head -n 1
                 )"
 
                 if [[ "${?}" -eq "0" && -n "${latest_version}" ]]; then
@@ -449,29 +465,15 @@ query_kernel() {
 
             # Reset the kernel array to the latest kernel version
             case "${k}" in
-            stable)
-                unset stable_kernel
-                stable_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            flippy)
-                unset flippy_kernel
-                flippy_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            dev)
-                unset dev_kernel
-                dev_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            beta)
-                unset beta_kernel
-                beta_kernel=(${tmp_arr_kernels[*]})
-                ;;
-            rk3588)
-                unset rk3588_kernel
-                rk3588_kernel=(${tmp_arr_kernels[*]})
-                ;;
+            stable) stable_kernel=(${tmp_arr_kernels[@]}) ;;
+            flippy) flippy_kernel=(${tmp_arr_kernels[@]}) ;;
+            dev) dev_kernel=(${tmp_arr_kernels[@]}) ;;
+            beta) beta_kernel=(${tmp_arr_kernels[@]}) ;;
+            rk3588) rk3588_kernel=(${tmp_arr_kernels[@]}) ;;
+            rk35xx) rk35xx_kernel=(${tmp_arr_kernels[@]}) ;;
+            h6) h6_kernel=(${tmp_arr_kernels[@]}) ;;
             specific)
-                unset specific_kernel
-                specific_kernel=(${tmp_arr_kernels[*]})
+                specific_kernel=(${tmp_arr_kernels[@]})
                 ;;
             *) error_msg "Invalid tags." ;;
             esac
@@ -484,7 +486,7 @@ query_kernel() {
 check_kernel() {
     [[ -n "${1}" ]] && check_path="${1}" || error_msg "Invalid kernel path to check."
     check_files=($(cat "${check_path}/sha256sums" | awk '{print $2}'))
-    for cf in ${check_files[*]}; do
+    for cf in "${check_files[@]}"; do
         {
             # Check if file exists
             [[ -s "${check_path}/${cf}" ]] || error_msg "The [ ${cf} ] file is missing."
@@ -494,7 +496,7 @@ check_kernel() {
             [[ "${tmp_sha256sum}" == "${tmp_checkcode}" ]] || error_msg "[ ${cf} ]: sha256sum verification failed."
         }
     done
-    echo -e "${INFO} All [ ${#check_files[*]} ] kernel files are sha256sum checked to be complete.\n"
+    echo -e "${INFO} All [ ${#check_files[@]} ] kernel files are sha256sum checked to be complete.\n"
 }
 
 download_kernel() {
@@ -502,28 +504,20 @@ download_kernel() {
     echo -e "${STEPS} Start downloading the kernel files..."
 
     x="1"
-    for k in ${tags_list[*]}; do
+    for k in "${tags_list[@]}"; do
         {
             # Set the kernel download list
             kd="${k}"
             case "${k}" in
-            stable)
-                down_kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                down_kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                down_kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                down_kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                down_kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) down_kernel_list=(${stable_kernel[@]}) ;;
+            flippy) down_kernel_list=(${flippy_kernel[@]}) ;;
+            dev) down_kernel_list=(${dev_kernel[@]}) ;;
+            beta) down_kernel_list=(${beta_kernel[@]}) ;;
+            rk3588) down_kernel_list=(${rk3588_kernel[@]}) ;;
+            rk35xx) down_kernel_list=(${rk35xx_kernel[@]}) ;;
+            h6) down_kernel_list=(${h6_kernel[@]}) ;;
             specific)
-                down_kernel_list=(${specific_kernel[*]})
+                down_kernel_list=(${specific_kernel[@]})
                 kd="${specific_tags}"
                 ;;
             *) error_msg "Invalid tags." ;;
@@ -531,13 +525,13 @@ download_kernel() {
 
             # Download the kernel to the storage directory
             i="1"
-            for kernel_var in ${down_kernel_list[*]}; do
+            for kernel_var in "${down_kernel_list[@]}"; do
                 if [[ ! -d "${kernel_path}/${kd}/${kernel_var}" ]]; then
                     kernel_down_from="https://github.com/${kernel_repo}/releases/download/kernel_${kd}/${kernel_var}.tar.gz"
                     echo -e "${INFO} (${x}.${i}) [ ${k} - ${kernel_var} ] Kernel download from [ ${kernel_down_from} ]"
 
-                    mkdir -p ${kernel_path}/${kd}
-                    wget "${kernel_down_from}" -q -P "${kernel_path}/${kd}"
+                    [[ -d "${kernel_path}/${kd}" ]] || mkdir -p ${kernel_path}/${kd}
+                    curl -fsSL "${kernel_down_from}" -o "${kernel_path}/${kd}/${kernel_var}.tar.gz"
                     [[ "${?}" -ne "0" ]] && error_msg "Failed to download the kernel files from the server."
 
                     tar -mxzf "${kernel_path}/${kd}/${kernel_var}.tar.gz" -C "${kernel_path}/${kd}"
@@ -597,7 +591,7 @@ confirm_version() {
     [[ -n "${PLATFORM}" ]] || error_msg "Invalid PLATFORM parameter: [ ${PLATFORM} ]"
     # Set supported platform name
     support_platform=("amlogic" "rockchip" "allwinner")
-    [[ -n "$(echo "${support_platform[*]}" | grep -w "${PLATFORM}")" ]] || error_msg "[ ${PLATFORM} ] not supported."
+    [[ -n "$(echo "${support_platform[@]}" | grep -w "${PLATFORM}")" ]] || error_msg "[ ${PLATFORM} ] not supported."
 
     # Replace custom kernel tags
     [[ -n "${kernel_usage}" && "${KERNEL_TAGS}" == "${default_tags}" ]] && KERNEL_TAGS="${kernel_usage}"
@@ -761,8 +755,8 @@ extract_openwrt() {
     # Copy the overload files
     [[ "${PLATFORM}" == "amlogic" ]] && cp -rf ${uboot_path}/${PLATFORM}/overload/* ${tag_bootfs}
 
-    # Remove the .svn and .git directories
-    rm -rf $(find ${tmp_path} -type d -name '.svn' -o -name '.git')
+    # Remove the .git directories
+    rm -rf $(find ${tmp_path} -type d -name '.git')
 }
 
 replace_kernel() {
@@ -779,9 +773,9 @@ replace_kernel() {
 
     # 01. For /boot five files
     tar -mxzf ${kernel_boot} -C ${tag_bootfs}
+    [[ "${PLATFORM}" == "allwinner" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} Image)
     [[ "${PLATFORM}" == "amlogic" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} zImage)
     [[ "${PLATFORM}" == "rockchip" ]] && (cd ${tag_bootfs} && ln -sf uInitrd-${kernel_name} uInitrd && ln -sf vmlinuz-${kernel_name} Image)
-    [[ "${PLATFORM}" == "allwinner" ]] && (cd ${tag_bootfs} && cp -f uInitrd-${kernel_name} uInitrd && cp -f vmlinuz-${kernel_name} Image)
     [[ "$(ls ${tag_bootfs}/*${kernel_name} -l 2>/dev/null | grep "^-" | wc -l)" -ge "2" ]] || error_msg "The /boot files is missing."
     [[ "${PLATFORM}" == "amlogic" ]] && get_textoffset "${tag_bootfs}/zImage"
 
@@ -842,7 +836,7 @@ refactor_bootfs() {
     # Edit the armbianEnv.txt
     armbianenv_conf_file="armbianEnv.txt"
     [[ -f "${armbianenv_conf_file}" ]] && {
-        sed -i "s|^fdtfile=.*|fdtfile=${PLATFORM}/${FDTFILE}|g" ${armbianenv_conf_file}
+        sed -i "s|\(fdtfile=.*\/\)[^/]*$|\1${FDTFILE}|g" ${armbianenv_conf_file}
         sed -i "s|^rootdev=.*|rootdev=${armbianenv_rootdev}|g" ${armbianenv_conf_file}
         sed -i "s|^rootfstype=.*|rootfstype=btrfs|g" ${armbianenv_conf_file}
         sed -i "s|^rootflags=.*|rootflags=${armbianenv_rootflags}|g" ${armbianenv_conf_file}
@@ -1092,7 +1086,7 @@ loop_make() {
     echo -e "${STEPS} Start making OpenWrt firmware..."
 
     j="1"
-    for b in ${make_openwrt[*]}; do
+    for b in "${make_openwrt[@]}"; do
         {
             # Set specific configuration for building OpenWrt system
             board="${b}"
@@ -1101,30 +1095,22 @@ loop_make() {
             # Determine kernel tags
             kd="${KERNEL_TAGS}"
             case "${KERNEL_TAGS}" in
-            stable)
-                kernel_list=(${stable_kernel[*]})
-                ;;
-            flippy)
-                kernel_list=(${flippy_kernel[*]})
-                ;;
-            dev)
-                kernel_list=(${dev_kernel[*]})
-                ;;
-            beta)
-                kernel_list=(${beta_kernel[*]})
-                ;;
-            rk3588)
-                kernel_list=(${rk3588_kernel[*]})
-                ;;
+            stable) kernel_list=(${stable_kernel[@]}) ;;
+            flippy) kernel_list=(${flippy_kernel[@]}) ;;
+            dev) kernel_list=(${dev_kernel[@]}) ;;
+            beta) kernel_list=(${beta_kernel[@]}) ;;
+            rk3588) kernel_list=(${rk3588_kernel[@]}) ;;
+            rk35xx) kernel_list=(${rk35xx_kernel[@]}) ;;
+            h6) kernel_list=(${h6_kernel[@]}) ;;
             [0-9]*)
-                kernel_list=(${specific_kernel[*]})
+                kernel_list=(${specific_kernel[@]})
                 kd="${specific_tags}"
                 ;;
             *) error_msg "Invalid tags." ;;
             esac
 
             i="1"
-            for k in ${kernel_list[*]}; do
+            for k in "${kernel_list[@]}"; do
                 {
                     kernel="${k}"
 
@@ -1141,7 +1127,7 @@ loop_make() {
                     echo -ne "(${j}.${i}) Start making OpenWrt [\033[92m ${board} - ${kd}/${kernel} \033[0m]. "
                     now_remaining_space="$(df -Tk ${current_path} | grep '/dev/' | awk '{print $5}' | echo $(($(xargs) / 1024 / 1024)))"
                     if [[ "${now_remaining_space}" -le "3" ]]; then
-                        echo -e "${WARNING} Remaining space is less than 3G, exit this build."
+                        echo -e "${PROMPT} Remaining space is less than 3G, exit this build."
                         break
                     else
                         echo "Remaining space is ${now_remaining_space}G."
@@ -1184,7 +1170,7 @@ download_depends
 download_kernel
 
 # Show make settings
-echo -e "${INFO} [ ${#make_openwrt[*]} ] lists of OpenWrt board: [ $(echo ${make_openwrt[*]} | xargs) ]"
+echo -e "${INFO} [ ${#make_openwrt[@]} ] lists of OpenWrt board: [ $(echo ${make_openwrt[@]} | xargs) ]"
 echo -e "${INFO} Kernel Repo: [ ${kernel_repo} ], Kernel Usage: [ ${kernel_usage} ] \n"
 # Show server start information
 echo -e "${INFO} Server space usage before starting to compile: \n$(df -hT ${current_path}) \n"
