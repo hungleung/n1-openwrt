@@ -170,11 +170,12 @@ on:
       openwrt_storage:
         description: "Select image storage type."
         required: false
-        default: "save"
+        default: "basic"
         type: choice
         options:
           - save
           - temp
+          - basic
       builder_name:
         description: "Set OpenWrt builder signature."
         required: false
@@ -356,3 +357,4 @@ jobs:
             - Default IP: 192.168.88.2
             - Default username: root
             - Default password: password
+            - Default package: online upgrade/kms/qBittorrent/samba
