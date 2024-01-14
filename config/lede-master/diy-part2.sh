@@ -91,7 +91,7 @@ sed -i 's/nas/services/g' feeds/luci/applications/luci-app-samba4/luasrc/control
 # sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
 # remove packages not needed
-sed -i -e '56s/dnsmasq-full firewall iptables ppp ppp-mod-pppoe/luci-app-qbittorrent/' include/target.mk
+sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/adguardhome luci-app-qbittorrent/' include/target.mk
 sed -i -e '57s/block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun/luci-app-samba4/' include/target.mk
 sed -i -e '58s/iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings/nano htop curl/' include/target.mk
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/nfs-utils kmod-fs-nfs kmod-fs-nfs-v4 kmod-fs-nfs-v3 nfs-kernel-server kmod-loop/' include/target.mk
