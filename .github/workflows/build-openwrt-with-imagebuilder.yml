@@ -15,9 +15,10 @@ on:
       releases_branch:
         description: "Select the releases branch"
         required: false
-        default: "openwrt:22.03.5"
+        default: "openwrt:23.05.2"
         type: choice
         options:
+          - openwrt:23.05.2
           - openwrt:22.03.5
           - openwrt:21.02.7
           - openwrt:19.07.10
@@ -26,7 +27,7 @@ on:
       openwrt_board:
         description: "Select device board"
         required: false
-        default: "all"
+        default: "s905d"
         type: choice
         options:
           - all
@@ -188,12 +189,12 @@ on:
       builder_name:
         description: "Set OpenWrt builder signature."
         required: false
-        default: "ophub"
+        default: "lee"
         type: choice
         options:
           - ophub
           - angel
-          - yourname
+          - lee
 
 env:
   TZ: America/New_York
