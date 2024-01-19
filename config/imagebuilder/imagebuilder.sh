@@ -188,7 +188,7 @@ rebuild_firmware() {
         cgi-io chattr comgt comgt-ncm containerd coremark coreutils coreutils-base64 coreutils-nohup \
         coreutils-truncate curl dosfstools dumpe2fs e2freefrag e2fsprogs \
         exfat-mkfs f2fs-tools f2fsck fdisk gawk getopt git gzip iconv jq \
-        jshn libjson-script liblucihttp luci-app-samba4 \
+        jshn libjson-script liblucihttp luci-app-samba4 adguardhome \
         liblucihttp-lua libnetwork losetup lsattr lsblk lscpu mkf2fs mount-utils openssl-util parted \
         perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 \
         pigz pv rename resize2fs runc tar tini tune2fs \
@@ -201,10 +201,8 @@ rebuild_firmware() {
         \
         luci-app-amlogic luci-i18n-amlogic-zh-cn \
         -kmod-ppp -kmod-pppoe -ppp -ppp-mod-pppoe -wpad-basic \
-        -ip6tables -odhcp6c -kmod-ipv6 -kmod-ip6tables -odhcpd-ipv6only -odhcpd -iptables \
         -kmod-pppox -kmod-usb-net -kmod-usb-net-cdc-ether -kmod-usb-net-cdc-ncm -kmod-usb-net-huawei-cdc-ncm kmod-usb-net-qmi-wwan \
         -kmod-usb-serial -kmod-usb-serial-option -kmod-usb-serial-wwan -kmod-usb-wdm \
-        -libiwinfo-data -libiwinfo-lua -libiwinfo20210430 -rpcd-mod-iwinfo
         ${config_list} \
         "
 
