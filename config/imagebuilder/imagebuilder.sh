@@ -188,7 +188,7 @@ rebuild_firmware() {
         cgi-io chattr comgt comgt-ncm containerd coremark coreutils coreutils-base64 coreutils-nohup \
         coreutils-truncate curl dosfstools dumpe2fs e2freefrag e2fsprogs \
         exfat-mkfs f2fs-tools f2fsck fdisk gawk getopt git gzip iconv jq \
-        jshn libjson-script liblucihttp \
+        jshn libjson-script liblucihttp luci-app-samba4 \
         liblucihttp-lua libnetwork losetup lsattr lsblk lscpu mkf2fs mount-utils openssl-util parted \
         perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 \
         pigz pv rename resize2fs runc tar tini tune2fs \
