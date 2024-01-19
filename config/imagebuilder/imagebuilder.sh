@@ -200,12 +200,16 @@ rebuild_firmware() {
         luci-mod-status luci-mod-system \
         \
         luci-app-amlogic luci-i18n-amlogic-zh-cn \
-        \
+        -kmod-ppp -kmod-pppoe -ppp -ppp-mod-pppoe -wpad-basic \
+        -ip6tables -odhcp6c -kmod-ipv6 -kmod-ip6tables -odhcpd-ipv6only -odhcpd -iptables \
+        -kmod-pppox -kmod-usb-net -kmod-usb-net-cdc-ether -kmod-usb-net-cdc-ncm -kmod-usb-net-huawei-cdc-ncm kmod-usb-net-qmi-wwan \
+        -kmod-usb-serial -kmod-usb-serial-option -kmod-usb-serial-wwan -kmod-usb-wdm \
+        -libiwinfo-data -libiwinfo-lua -libiwinfo20210430 -rpcd-mod-iwinfo
         ${config_list} \
         "
 
     # Rebuild firmware
-    make image PROFILE="${target_profile}" PACKAGES="${my_packages}" FILES="files"
+    make image PROFILE="${target_profile}" PACKAGES="${my_packages}" FILES="files" CONFIG_IPV6=n
 
     sync && sleep 3
     echo -e "${INFO} [ openwrt/bin/targets/*/* ] directory status: $(ls bin/targets/*/* -l 2>/dev/null)"
