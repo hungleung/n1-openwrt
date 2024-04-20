@@ -37,5 +37,5 @@ sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_genera
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 
 # remove packages not needed
-sed -i -e '62s/ppp/luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
+sed -i -e '62s/ppp/luci-app-amlogic luci-app-dockerman docker-compose docker dockerd perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
 sed -i -e '63s/ppp-mod-pppoe/luci luci-app-samba4/' include/target.mk
