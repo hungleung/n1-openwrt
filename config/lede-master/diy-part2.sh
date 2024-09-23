@@ -96,4 +96,4 @@ sed -i -e '57s/block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra km
 sed -i -e '58s/iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings/nano htop curl/' include/target.mk
 sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot//' include/target.mk
 sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus/luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
-sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificate//' include/target.mk
+sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificate/luci-app-wireguard luci-proto-wireguard/' include/target.mk
