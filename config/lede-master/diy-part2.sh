@@ -29,7 +29,8 @@ echo "DISTRIB_SOURCECODE='lede'" >>package/base-files/files/etc/openwrt_release
 # ------------------------------- Other started -------------------------------
 #
 # Add luci-app-amlogic
-svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
+rm -rf package/luci-app-amlogic
+git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
 # svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash
 # Fix runc version error
 # rm -rf ./feeds/packages/utils/runc/Makefile
@@ -61,7 +62,7 @@ svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/
 
 # change default lan address and hostname
 # verified to be working
-sed -i 's/192.168.1.1/192.168.88.2/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.88.254/g' package/base-files/files/bin/config_generate
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
 sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
 sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
@@ -91,9 +92,9 @@ sed -i 's/nas/services/g' feeds/luci/applications/luci-app-samba4/luasrc/control
 # sed -i 's/"ShadowSocksR Plus+"/"SSRP+"/'  feeds/helloworld/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 
 # remove packages not needed
-sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe/adguardhome luci-app-qbittorrent/' include/target.mk
-sed -i -e '57s/block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun/luci-app-samba4/' include/target.mk
+sed -i -e '56s/firewall iptables ppp ppp-mod-pppoe//' include/target.mk
+sed -i -e '57s/block-mount coremark kmod-nf-nathelper kmod-nf-nathelper-extra kmod-ipt-raw kmod-tun/luci-app-wireguard/' include/target.mk
 sed -i -e '58s/iptables-mod-tproxy iptables-mod-extra ipset ip-full default-settings/nano htop curl/' include/target.mk
-sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot//' include/target.mk
+sed -i -e '59s/ddns-scripts_aliyun ddns-scripts_dnspod luci-app-ddns luci-app-upnp luci-app-autoreboot/luci-proto-wireguard/' include/target.mk
 sed -i -e '60s/luci-app-arpbind luci-app-filetransfer luci-app-vsftpd luci-app-ssr-plus/luci-app-amlogic perl perl-http-date perlbase-file perlbase-getopt perlbase-time perlbase-unicode perlbase-utf8 blkid fdisk lsblk parted attr btrfs-progs chattr dosfstools e2fsprogs f2fs-tools f2fsck lsattr mkf2fs xfs-fsck xfs-mkfs bsdtar bash gawk getopt losetup tar uuidgen/' include/target.mk
-sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificate/luci-app-wireguard luci-proto-wireguard/' include/target.mk
+sed -i -e '61s/luci-app-accesscontrol luci-app-nlbwmon luci-app-turboacc luci-app-wol curl ca-certificate/luci/' include/target.mk
