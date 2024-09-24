@@ -62,14 +62,14 @@ git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
 
 # change default lan address and hostname
 # verified to be working
-sed -i 's/192.168.1.1/192.168.88.254/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.88.3/g' package/base-files/files/bin/config_generate
 sed -i 's/OpenWrt/Home/g' package/base-files/files/bin/config_generate
-sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
-sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
-sed -i '281s/y/n/'  config/Config-images.in
-sed -i '293s/y/n/'  config/Config-images.in
-sed -i '70s/y/n/'  config/Config-images.in
-sed -i '80s/y/n/'  config/Config-images.in
+# sed -i 's/\+shellsync//' package/network/services/ppp/Makefile
+# sed -i 's/\+kmod-mppe//' package/network/services/ppp/Makefile
+# sed -i '281s/y/n/'  config/Config-images.in
+# sed -i '293s/y/n/'  config/Config-images.in
+# sed -i '70s/y/n/'  config/Config-images.in
+# sed -i '80s/y/n/'  config/Config-images.in
 sed -i '27s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
 sed -i '31s/y/n/'  feeds/luci/applications/luci-app-rclone/Makefile
 sed -i '29s/y/n/'  feeds/luci/applications/luci-app-unblockmusic/Makefile
